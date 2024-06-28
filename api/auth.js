@@ -22,7 +22,7 @@ router.post('/login', async (req, res) => {
                 return;
             }
 
-            const data = await mongodb.LoadCollection('admins');
+            const data = await mongodb.LoadCollection('users');
             const userData = await data.findOne({mail: mail});
             if (userData) { 
                 if (password === userData.password) {
@@ -67,13 +67,13 @@ router.post("/register", async (req, res, next) => {
             return res.status(400).json({ message: 'Name is required', error: true });
         }
 
-        const data = await mongodb.LoadCollection('admins');
+        const data = await mongodb.LoadCollection('users');
         const userData = await data.findOne({ mail: mail });
 
         if (userData) {
             return res.status(400).json({ message: 'Email already in use', error: true });
         } else {
-            await data.insertOne({ mail: mail, password: password, username: name, admin: 0 });
+            await data.insertOne({ mail: mail, password: password, username: name, admin: 0, posts: []});
             return res.status(200).json({ message: 'User created', error: false });
         }
     } catch (error) {
